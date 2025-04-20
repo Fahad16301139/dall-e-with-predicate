@@ -1,32 +1,12 @@
-# Predicated Diffusion: Predicate Logic-Based Attention Guidance for Text-to-Image Diffusion Models
-
-This code was built by modifying the official implementation of [Chefer et al., "Attend-and-Excite: Attention-Based Semantic Guidance for Text-to-Image Diffusion Models," SIGGRAPH, 2023.](https://github.com/yuval-alaluf/Attend-and-Excite)
-
-## Usage
-
-For Experiment (i), to generate the image of "a dog and a bowl," run
-
-```sh
-python run.py --prompt "A dog and a bowl" --attention_corr_indices [] --attention_exist_indices [2,5] --attention_leak_indices [] --attention_possession_indices []
-```
-
-For Experiment (ii), to generate the image of "a brown dog and a yellow bowl," run
-
-```sh
-python run.py --prompt "A brown dog and a yellow bowl" --attention_corr_indices [[2,3],[6,7]] --attention_exist_indices [3,7] --attention_leak_indices [[2,7],[6,3]] --attention_possession_indices []
-```
-
-For Experiment (iii), to generate the image of "a frog wearing a hat," run
-
-```sh
-python run.py --prompt "A frog wearing a hat" --attention_corr_indices [] --attention_exist_indices [2,5] --attention_leak_indices [] --attention_possession_indices [2,5]
-```
-
-# PredicatedDiff
+# DALL-E with Predicate Logic
 
 Official implementation for the paper ["PredicatedDiff: Bringing Relations and Logical Structures into Diffusion Models via Predicated Guidance"](https://arxiv.org/pdf/2402.04605.pdf).
 
 ![Figure](images/teaser.png)
+
+## Overview
+
+This repository includes a standalone DALL-E implementation with predicate logic guidance. The code provides a simplified interface for using DALL-E with predicate constraints to improve image generation.
 
 ## Installation
 
@@ -44,6 +24,11 @@ pip install torch torchvision
 Install other requirements:
 ```
 pip install -r requirements.txt
+```
+
+For standalone DALL-E only:
+```
+pip install -r requirements_dalle.txt
 ```
 
 ## Running the Demo
@@ -95,6 +80,23 @@ set OPENAI_API_KEY=your_api_key_here
 ### Linux/WSL:
 ```
 export OPENAI_API_KEY=your_api_key_here
+```
+
+## Original PredicatedDiff Usage
+
+For Experiment (i), to generate the image of "a dog and a bowl," run:
+```sh
+python run.py --prompt "A dog and a bowl" --attention_corr_indices [] --attention_exist_indices [2,5] --attention_leak_indices [] --attention_possession_indices []
+```
+
+For Experiment (ii), to generate the image of "a brown dog and a yellow bowl," run:
+```sh
+python run.py --prompt "A brown dog and a yellow bowl" --attention_corr_indices [[2,3],[6,7]] --attention_exist_indices [3,7] --attention_leak_indices [[2,7],[6,3]] --attention_possession_indices []
+```
+
+For Experiment (iii), to generate the image of "a frog wearing a hat," run:
+```sh
+python run.py --prompt "A frog wearing a hat" --attention_corr_indices [] --attention_exist_indices [2,5] --attention_leak_indices [] --attention_possession_indices [2,5]
 ```
 
 ## More Information
