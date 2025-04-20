@@ -1,0 +1,55 @@
+# Python-specific ignores
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.env
+
+# IDE-specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Output directories and files
+outputs/
+datasets/
+
+# API keys and sensitive information
+.env
+
+# Logs
+*.log
+.DS_Store
+
+outputs
+*.txt
+metrics/
+metric/
+calucate_sim.py
+*.zip
+command.txt
+test_grad.py
+prompt_exist_list.py
+prompt_list.py
