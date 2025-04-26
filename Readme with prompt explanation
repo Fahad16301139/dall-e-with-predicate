@@ -1,7 +1,7 @@
 
 # Code Execution Walkthrough for DALL-E with Predicate Logic
 
-I'll walk you through exactly what happens when you run this command:
+
 ```
 python run_dalle_standalone.py --prompt "Spiderman and batman fighting" --output_dir "outputs/dalle" --auto_analyze
 ```
