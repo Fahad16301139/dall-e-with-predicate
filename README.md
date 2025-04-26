@@ -81,7 +81,8 @@ set OPENAI_API_KEY=your_api_key_here
 ```
 export OPENAI_API_KEY=your_api_key_here
 ```
-
+ Simple prompt to start with:
+ python run_dalle_standalone.py --prompt "Spiderman" --output_dir "outputs/dalle" --auto_analyze
 ## Original PredicatedDiff Usage
 
 For Experiment (i), to generate the image of "a dog and a bowl," run:
