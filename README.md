@@ -511,3 +511,166 @@ In the DALL-E standalone version:
 
 This approach demonstrates that predicate logic can be applied to text-to-image models even without direct access to their internal parameters or attention mechanisms.
 
+
+# Code Implementation of Novel Aspects
+
+Here's where each novel aspect is implemented in the code:
+
+## 1. Translation of Formal Logic to Natural Language
+
+This is implemented in the `enhance_prompt_with_predicates` function in `run_dalle_standalone.py`:
+
+```python
+def enhance_prompt_with_predicates(prompt, corr_indices=None, leak_indices=None, exist_indices=None, possession_indices=None):
+    """Enhance the prompt with predicate logic to improve DALL-E generation"""
+    enhanced_parts = [prompt]
+    
+    # Add correlation constraints
+    if corr_indices:
+        for pair in corr_indices:
+            if len(pair) == 2:
+                enhanced_parts.append(f"Make sure the attributes correctly correspond to their objects")
+    
+    # Add existence constraints
+    if exist_indices:
+        enhanced_parts.append(f"Make sure all objects are clearly visible in the image")
+    
+    # Add possession constraints
+    if possession_indices:
+        for pair in possession_indices:
+            if len(pair) == 2:
+                enhanced_parts.append(f"The objects should have a clear ownership relationship")
+    
+    # Create final enhanced prompt
+    enhanced_prompt = prompt + ". " + " ".join(enhanced_parts[1:])
+    return enhanced_prompt
+```
+
+This function converts abstract predicate indices into natural language instructions.
+
+## 2. Automated Constraint Detection
+
+This is implemented in the `analyze_prompt_for_predicates` function:
+
+```python
+def analyze_prompt_for_predicates(prompt):
+    """Analyze a prompt to identify potential predicated diffusion constraints"""
+    words = prompt.lower().split()
+    
+    # Simple heuristic to find color-object pairs
+    colors = ['red', 'blue', 'green', 'yellow', 'black', 'white', 'purple', 
+              'orange', 'brown', 'pink', 'gray', 'grey']
+    
+    corr_pairs = []
+    exist_indices = []
+    possession_indices = []
+    
+    # Find color-object correlations
+    for i, word in enumerate(words):
+        if word in colors and i < len(words) - 1:
+            # This is a simple heuristic assuming color followed by object
+            corr_pairs.append([i, i+1])
+            exist_indices.append(i+1)  # The object should exist
+    
+    # Find possession relationships (very simplified)
+    for i, word in enumerate(words):
+        if word in ['with', 'wearing', 'holding'] and i > 0 and i < len(words) - 1:
+            possession_indices.append([i-1, i+1])
+    
+    return corr_pairs, exist_indices, possession_indices
+```
+
+This automatically detects predicate relationships without requiring manual specification.
+
+## 3. Non-Invasive Implementation
+
+This is implemented in the `generate_image_with_dalle` function:
+
+```python
+def generate_image_with_dalle(client, prompt, dalle_version="dall-e-3", 
+                             corr_indices=None, leak_indices=None, 
+                             exist_indices=None, possession_indices=None):
+    """Generate an image using DALL-E with the given prompt and predicate constraints"""
+    # Configure DALL-E parameters
+    params = {
+        "model": dalle_version,
+        "prompt": prompt,
+        "n": 1,  # Number of images to generate
+        "size": "1024x1024",  # Default size
+    }
+    
+    # Include predicate logic from predicated diffusion in the prompt
+    enhanced_prompt = enhance_prompt_with_predicates(
+        prompt, 
+        corr_indices,
+        leak_indices, 
+        exist_indices,
+        possession_indices
+    )
+    
+    params["prompt"] = enhanced_prompt
+    
+    # Generate image using DALL-E API
+    response = client.images.generate(**params)
+    
+    # Handle the response
+    url = response.data[0].url
+    # ...
+```
+
+This function works with DALL-E's API without needing access to model internals.
+
+## 4. Domain-Specific Constraint Framework
+
+This is implemented throughout the code but particularly in these parts:
+
+1. The predicate types defined in `enhance_prompt_with_predicates`
+2. The domain-specific heuristics in `analyze_prompt_for_predicates`
+3. The overall structure in `main()` that ties these components together:
+
+```python
+def main():
+    # ...
+    # Auto analyze prompt if requested
+    if args.auto_analyze:
+        print("Automatically analyzing prompt for predicate constraints...")
+        corr_pairs, exist_idx, poss_pairs = analyze_prompt_for_predicates(args.prompt)
+        
+        if corr_pairs:
+            print(f"Found correlation pairs: {corr_pairs}")
+            corr_indices = corr_pairs
+            
+        if exist_idx:
+            print(f"Found existence indices: {exist_idx}")
+            exist_indices = exist_idx
+            
+        if poss_pairs:
+            print(f"Found possession pairs: {poss_pairs}")
+            possession_indices = poss_pairs
+    # ...
+```
+
+## 5. Hybrid Solution
+
+The hybrid approach is implemented across the entire script but is most evident in how these components interact:
+
+1. The symbolic approach (predicate logic) is implemented in the constraint representation
+2. The integration with neural generative AI is in the OpenAI client initialization and API call:
+
+```python
+def init_openai_client(api_key=None):
+    """Initialize the OpenAI client with the provided API key or from environment variable"""
+    try:
+        from openai import OpenAI
+        
+        if api_key is None:
+            api_key = os.environ.get("OPENAI_API_KEY")
+            if api_key is None:
+                raise ValueError("No API key provided and OPENAI_API_KEY environment variable not set")
+        
+        return OpenAI(api_key=api_key)
+    # ...
+```
+
+The execution flow ties these components together, starting from the command line interface, through constraint detection, prompt enhancement, and finally image generation - creating a seamless hybrid system that combines symbolic and neural approaches.
+
